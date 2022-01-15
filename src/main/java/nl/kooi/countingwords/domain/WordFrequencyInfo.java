@@ -1,14 +1,14 @@
 package nl.kooi.countingwords.domain;
 
 
-public class WordFrequencyInfo implements WordFrequency {
-    @Override
-    public String getWord() {
-        return null;
-    }
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-    @Override
-    public int getFrequency() {
-        return 0;
-    }
+@RequiredArgsConstructor(staticName = "of")
+@Getter
+@ToString
+public class WordFrequencyInfo implements WordFrequency {
+    private final String word;
+    private final int frequency;
 }

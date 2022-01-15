@@ -1,4 +1,4 @@
-package nl.kooi.countingwords;
+package nl.kooi.countingwords.exception;
 
 public class WordProcessingException extends RuntimeException {
 

@@ -1,6 +1,6 @@
 package nl.kooi.countingwords.domain;
 
-import nl.kooi.countingwords.WordProcessingException;
+import nl.kooi.countingwords.exception.WordProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -14,7 +14,7 @@ class WordFrequencyServiceTest {
     @Autowired
     private WordFrequencyAnalyzer wordFrequencyAnalyzer;
 
-    private static String TEXT = "Laurens, Laurens, Laurens, Ordina, Ordina, Assessment, Assessment";
+    private static String TEXT = "Laurens, Laurens, Laurens, Ordina, Ordina, Assessment, Assessment, Nice";
 
     @Test
     void calculateHighestFrequency() {
@@ -27,7 +27,7 @@ class WordFrequencyServiceTest {
     }
 
     @Test
-    void calculateHighestFrequency_Nullext() {
+    void calculateHighestFrequency_NullText() {
         var errorMessage = assertThrows(WordProcessingException.class,
                 () -> wordFrequencyAnalyzer.calculateHighestFrequency(null)).getMessage();
         assertThat(errorMessage).isEqualTo("Input text is null. Null texts cannot be analyzed.");
@@ -35,12 +35,12 @@ class WordFrequencyServiceTest {
 
     @Test
     void calculateFrequencyForWord_WordMatchesFully() {
-        assertThat(wordFrequencyAnalyzer.calculateFrequencyForWord(TEXT, "Laurens")).isEqualTo(3);
+        assertThat(wordFrequencyAnalyzer.calculateFrequencyForWord(TEXT, "ordina")).isEqualTo(2);
     }
 
     @Test
     void calculateFrequencyForWord_WordMatchesPartially() {
-        assertThat(wordFrequencyAnalyzer.calculateFrequencyForWord(TEXT, "Lau")).isEqualTo(0);
+        assertThat(wordFrequencyAnalyzer.calculateFrequencyForWord(TEXT, "Ord")).isEqualTo(0);
     }
 
     @Test
@@ -66,5 +66,45 @@ class WordFrequencyServiceTest {
 
     @Test
     void calculateMostFrequentNWords() {
+        var result = wordFrequencyAnalyzer.calculateMostFrequentNWords(TEXT, 2);
+        assertThat(result).hasSize(2);
+        assertThat(result[0].getFrequency()).isEqualTo(3);
+        assertThat(result[0].getWord()).isEqualTo("laurens");
+        assertThat(result[1].getFrequency()).isEqualTo(2);
+        assertThat(result[1].getWord()).isEqualTo("assessment");
     }
+
+    @Test
+    void calculateMostFrequentNWords_SameFrequencyAscAlphabeticalOrder() {
+        var text = "PYthon&Java!kotlin+java8Angular3kotlin angular";
+        var result = wordFrequencyAnalyzer.calculateMostFrequentNWords(text, 3);
+
+        assertThat(result).hasSize(3);
+        assertThat(result[0].getFrequency()).isEqualTo(2);
+        assertThat(result[0].getWord()).isEqualTo("angular");
+        assertThat(result[1].getFrequency()).isEqualTo(2);
+        assertThat(result[1].getWord()).isEqualTo("java");
+        assertThat(result[2].getFrequency()).isEqualTo(2);
+        assertThat(result[2].getWord()).isEqualTo("kotlin");
+    }
+
+    @Test
+    void calculateMostFrequentNWords_LessWordsThanN() {
+        var result = wordFrequencyAnalyzer.calculateMostFrequentNWords(TEXT, 10);
+        assertThat(result).hasSize(4);
+    }
+
+    @Test
+    void calculateMostFrequentNWords_NegativeN() {
+        var result = wordFrequencyAnalyzer.calculateMostFrequentNWords(TEXT, -1);
+        assertThat(result).hasSize(0);
+    }
+
+    @Test
+    void calculateMostFrequentNWords_NullText() {
+        var errorMessage = assertThrows(WordProcessingException.class,
+                () -> wordFrequencyAnalyzer.calculateMostFrequentNWords(null, 5)).getMessage();
+        assertThat(errorMessage).isEqualTo("Input text is null. Null texts cannot be analyzed.");
+    }
+
 }

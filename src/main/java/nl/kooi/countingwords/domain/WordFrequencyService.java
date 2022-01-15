@@ -2,7 +2,7 @@ package nl.kooi.countingwords.domain;
 
 
 import lombok.extern.slf4j.Slf4j;
-import nl.kooi.countingwords.WordProcessingException;
+import nl.kooi.countingwords.exception.WordProcessingException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ public class WordFrequencyService implements WordFrequencyAnalyzer {
 
     @Override
     public int calculateHighestFrequency(String text) {
-        assertText(text);
+        verifyText(text);
         return countGroupedByWord(text).values().stream().mapToInt(Long::intValue).max().orElse(0);
     }
 
@@ -43,21 +43,21 @@ public class WordFrequencyService implements WordFrequencyAnalyzer {
 
     @Override
     public int calculateFrequencyForWord(String text, String word) {
-        assertWord(word);
-        assertText(text);
+        verifyWord(word);
+        verifyText(text);
 
         var pattern = Pattern.compile(String.format(EXACT_WORD_REGEX, word));
 
         return Math.toIntExact(pattern.matcher(text.toLowerCase()).results().count());
     }
 
-    private void assertText(String text) {
+    private void verifyText(String text) {
         if (text == null) {
             throw new WordProcessingException("Input text is null. Null texts cannot be analyzed.");
         }
     }
 
-    private void assertWord(String word) {
+    private void verifyWord(String word) {
         var pattern = Pattern.compile(WORD_REGEX);
 
         if (isStringEmpty(word) || !pattern.matcher(word).matches()) {
@@ -68,6 +68,16 @@ public class WordFrequencyService implements WordFrequencyAnalyzer {
 
     @Override
     public WordFrequency[] calculateMostFrequentNWords(String text, int n) {
-        return new WordFrequency[0];
+        verifyText(text);
+
+        var frequencyDescWordAscComparator =
+                Map.Entry.<String, Long>comparingByValue().reversed()
+                        .thenComparing(Map.Entry.comparingByKey());
+
+        return countGroupedByWord(text).entrySet().stream()
+                .sorted(frequencyDescWordAscComparator)
+                .limit(Math.max(n, 0))
+                .map(e -> WordFrequencyInfo.of(e.getKey(), e.getValue().intValue()))
+                .toArray(WordFrequency[]::new);
     }
 }
