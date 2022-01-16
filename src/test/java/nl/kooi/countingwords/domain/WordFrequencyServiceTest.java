@@ -1,5 +1,7 @@
 package nl.kooi.countingwords.domain;
 
+import nl.kooi.countingwords.domain.service.WordFrequencyAnalyzer;
+import nl.kooi.countingwords.domain.service.WordFrequencyService;
 import nl.kooi.countingwords.exception.WordProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
