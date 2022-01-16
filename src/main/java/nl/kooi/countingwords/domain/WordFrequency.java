@@ -1,6 +1,6 @@
 package nl.kooi.countingwords.domain;
 
-interface WordFrequency {
+public interface WordFrequency {
     String getWord();
 
     int getFrequency();

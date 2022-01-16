@@ -1,7 +1,9 @@
-package nl.kooi.countingwords.domain;
+package nl.kooi.countingwords.domain.service;
 
 
 import lombok.extern.slf4j.Slf4j;
+import nl.kooi.countingwords.domain.WordFrequency;
+import nl.kooi.countingwords.domain.WordFrequencyInfo;
 import nl.kooi.countingwords.exception.WordProcessingException;
 import org.springframework.stereotype.Service;
 
