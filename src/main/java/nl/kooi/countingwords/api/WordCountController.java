@@ -27,7 +27,7 @@ public class WordCountController {
     private final WordFrequencyService service;
 
     /**
-     * POST /rest/word-count/highest-frequency : Calculate which word has the highest frequency in a text.
+     * POST /rest/word-count/highest-frequency : Calculate the highest frequency of one word in a text.
      *
      * @param body The FrequencyRequestDto object
      * @return The word frequency information object (status code 200)
@@ -69,7 +69,7 @@ public class WordCountController {
      * POST /rest/word-count/top-frequency : Calculate the top n highest frequency words in a text.
      *
      * @param body The TopFrequencyRequestDto object
-     * @return A list of the top n word frequency information objects (status code 200)
+     * @return A list of the top n word frequency information objects sorted descending by frequency (status code 200)
      * or Bad request (status code 400)
      * or Server side problem (status code 500)
      */

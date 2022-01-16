@@ -32,7 +32,7 @@ interface WordFrequencyAnalyzer {
 }
 ```
 
-which is implementend in the **nl.kooi.countingwords.domain.service** package.
+which is implemented in the **nl.kooi.countingwords.domain.service** package.
 
 **More information**
 
