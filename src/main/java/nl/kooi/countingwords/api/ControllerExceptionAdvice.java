@@ -17,10 +17,18 @@ import java.util.stream.Collectors;
 public class ControllerExceptionAdvice {
 
     @ExceptionHandler({WordProcessingException.class})
-    public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException exception) {
+    public ResponseEntity<ErrorResponseDto> handleWordProcessingException(WordProcessingException exception) {
         log.error(exception.getMessage());
         return ResponseEntity
                 .badRequest()
+                .body(new ErrorResponseDto().reason(exception.getMessage()).reference(UUID.randomUUID()));
+    }
+
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException exception) {
+        log.error(exception.getMessage());
+        return ResponseEntity
+                .internalServerError()
                 .body(new ErrorResponseDto().reason(exception.getMessage()).reference(UUID.randomUUID()));
     }
 

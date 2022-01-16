@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.kooi.countingwords.api.ControllerExceptionAdvice;
 import nl.kooi.countingwords.api.WordCountController;
 import nl.kooi.countingwords.api.dto.ErrorResponseDto;
+import nl.kooi.countingwords.api.dto.FrequencyDto;
 import nl.kooi.countingwords.api.dto.FrequencyRequestDto;
 import nl.kooi.countingwords.api.dto.WordFrequencyDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +51,7 @@ public class WordCountApplicationIntegrationTests {
 
         var mvcResult = getAndVerifyResponse(HIGHEST_FREQUENCY_ENDPOINT, getFrequencyRequestDto(TEXT), status().isOk());
 
-        var response = objectMapper.readValue(mvcResult.getContentAsString(), WordFrequencyDto.class);
+        var response = objectMapper.readValue(mvcResult.getContentAsString(), FrequencyDto.class);
 
         assertThat(response).isNotNull();
         assertThat(response.getFrequency()).isEqualTo(3);
