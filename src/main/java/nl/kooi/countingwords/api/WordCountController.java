@@ -62,7 +62,7 @@ public class WordCountController {
     public WordFrequencyDto calculateFrequencyForWord(@RequestBody @Valid WordFrequencyRequestDto body) {
         var frequencyForWord = service.calculateFrequencyForWord(body.getText(), body.getWord());
 
-        return new WordFrequencyDto().word(body.getWord()).frequency(frequencyForWord);
+        return new WordFrequencyDto().word(body.getWord().toLowerCase()).frequency(frequencyForWord);
     }
 
     /**

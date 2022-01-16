@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-public class WordCountApplicationIntegrationTests {
+public class WordCountIntegrationTests {
 
     @Autowired
     private WordCountController controller;
