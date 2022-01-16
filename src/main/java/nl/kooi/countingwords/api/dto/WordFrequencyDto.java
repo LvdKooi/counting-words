@@ -1,11 +1,12 @@
 package nl.kooi.countingwords.api.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class WordFrequencyDto {
+@EqualsAndHashCode(callSuper = true)
+public class WordFrequencyDto extends FrequencyDto {
     private String word;
-    private int frequency;
 
     public WordFrequencyDto word(String word) {
         this.word = word;
@@ -13,7 +14,7 @@ public class WordFrequencyDto {
     }
 
     public WordFrequencyDto frequency(int frequency) {
-        this.frequency = frequency;
+        super.frequency = frequency;
         return this;
     }
 }

@@ -27,8 +27,10 @@ public class WordFrequencyService implements WordFrequencyAnalyzer {
         return countGroupedByWord(text).values().stream().mapToInt(Long::intValue).max().orElse(0);
     }
 
-    private boolean isStringEmpty(String text) {
-        return text == null || "".equals(text);
+    private void verifyText(String text) {
+        if (text == null) {
+            throw new WordProcessingException("Input text is null. Null texts cannot be analyzed.");
+        }
     }
 
     private Map<String, Long> countGroupedByWord(String text) {
@@ -43,6 +45,10 @@ public class WordFrequencyService implements WordFrequencyAnalyzer {
                         .map(String::toLowerCase);
     }
 
+    private boolean isStringEmpty(String text) {
+        return text == null || "".equals(text);
+    }
+
     @Override
     public int calculateFrequencyForWord(String text, String word) {
         verifyWord(word);
@@ -51,12 +57,6 @@ public class WordFrequencyService implements WordFrequencyAnalyzer {
         var pattern = Pattern.compile(String.format(EXACT_WORD_REGEX, word));
 
         return Math.toIntExact(pattern.matcher(text.toLowerCase()).results().count());
-    }
-
-    private void verifyText(String text) {
-        if (text == null) {
-            throw new WordProcessingException("Input text is null. Null texts cannot be analyzed.");
-        }
     }
 
     private void verifyWord(String word) {

@@ -3,6 +3,7 @@ package nl.kooi.countingwords.api;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.kooi.countingwords.api.dto.ErrorResponseDto;
+import nl.kooi.countingwords.api.dto.FrequencyDto;
 import nl.kooi.countingwords.api.dto.FrequencyRequestDto;
 import nl.kooi.countingwords.api.dto.WordFrequencyDto;
 import nl.kooi.countingwords.domain.WordFrequency;
@@ -58,7 +59,7 @@ class WordCountControllerTest {
 
         var mvcResult = getAndVerifyResponse(HIGHEST_FREQUENCY_ENDPOINT, getFrequencyRequestDto(TEXT), status().isOk());
 
-        var response = objectMapper.readValue(mvcResult.getContentAsString(), WordFrequencyDto.class);
+        var response = objectMapper.readValue(mvcResult.getContentAsString(), FrequencyDto.class);
 
         assertThat(response).isNotNull();
         assertThat(response.getFrequency()).isEqualTo(3);
@@ -150,6 +151,24 @@ class WordCountControllerTest {
                 getAndVerifyResponse(HIGHEST_FREQUENCY_FOR_WORD_ENDPOINT,
                         getWordFrequencyRequestDto(TEXT, "!@#$!@#$"),
                         status().isBadRequest());
+
+        var response = objectMapper.readValue(mvcResult.getContentAsString(), ErrorResponseDto.class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.getReason()).isEqualTo(errorMessage);
+    }
+
+    @Test
+    void calculateFrequencyForWord_ServiceThrowsRuntimeException() throws Exception {
+        var errorMessage = "Error.";
+
+        when(service.calculateFrequencyForWord(TEXT, "!@#$!@#$"))
+                .thenThrow(new RuntimeException(errorMessage));
+
+        var mvcResult =
+                getAndVerifyResponse(HIGHEST_FREQUENCY_FOR_WORD_ENDPOINT,
+                        getWordFrequencyRequestDto(TEXT, "!@#$!@#$"),
+                        status().isInternalServerError());
 
         var response = objectMapper.readValue(mvcResult.getContentAsString(), ErrorResponseDto.class);
 
